@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetOrbiters.CSharp.Plugins", "PlanetOrbiters.CSharp.Plugins.csproj", "{E2A98AE6-E201-822B-1605-8F00FA0150F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetOrbiters.CSharp", "PlanetOrbiters.CSharp.csproj", "{C0776F7B-8585-12E8-39B8-5E8B05E5E3C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetOrbiters.CSharp.Editor.Plugins", "PlanetOrbiters.CSharp.Editor.Plugins.csproj", "{B0A2F8AF-08AC-3E3C-CEAB-718F72FB1B5B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E2A98AE6-E201-822B-1605-8F00FA0150F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2A98AE6-E201-822B-1605-8F00FA0150F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2A98AE6-E201-822B-1605-8F00FA0150F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2A98AE6-E201-822B-1605-8F00FA0150F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0776F7B-8585-12E8-39B8-5E8B05E5E3C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0776F7B-8585-12E8-39B8-5E8B05E5E3C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0776F7B-8585-12E8-39B8-5E8B05E5E3C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0776F7B-8585-12E8-39B8-5E8B05E5E3C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0A2F8AF-08AC-3E3C-CEAB-718F72FB1B5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0A2F8AF-08AC-3E3C-CEAB-718F72FB1B5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0A2F8AF-08AC-3E3C-CEAB-718F72FB1B5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0A2F8AF-08AC-3E3C-CEAB-718F72FB1B5B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
