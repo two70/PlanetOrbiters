@@ -2,112 +2,56 @@
 using System.Collections.Generic;
 using BeardedManStudios.Network;
 
-public class Player : NetworkedMonoBehavior {
-    
-    public float mass = 100;
+public class Player : MonoBehaviour {
 
-    public static int currentPlanet = 0;
-    public Color c1 = Color.yellow;
-    public Color c2 = Color.blue;
-    
-    private LineRenderer lineRenderer;
-    private Vector3 worldMousePositionStart;
-    private Vector3 worldMousePositionStop;
-    private bool mouseHeldDown = false;
-    private bool multiTouchMode = false;
-    private List<GameObject> planetPrefabs;
-
-    // This is the resources directory where prefabs are loaded from
-    public string resourcesDirectory = string.Empty;
-
-    public static List<Player> players = new List<Player>();
+    public GameObject starPrefab = null;
+    public GameObject stationPrefab = null;
+    public List<GameObject> planetPrefabs;
+    public GameObject sun;
+    public ulong myID;
+    public int currentPlanet = 0;
+    public static List<Star> stars = new List<Star>();
     public static List<Planet> planets = new List<Planet>();
-
     
-    private void Start() {
-        players.Add(this);
-        lineRenderer = gameObject.AddComponent<LineRenderer>();
-        lineRenderer.material = new Material(Shader.Find("Standard"));
-        lineRenderer.SetColors(c1, c2);
-        lineRenderer.SetWidth(2f, 4f);
-        lineRenderer.SetVertexCount(2);
-        planetPrefabs = new List<GameObject>();
+    private GameObject tempPlanet;
+    private Station station = null;
 
-        if (!string.IsNullOrEmpty(resourcesDirectory)) {
-            foreach (GameObject obj in Resources.LoadAll<GameObject>(resourcesDirectory)) {
-                GameObject planet = new GameObject();
-                planetPrefabs.Add(obj);
-            }
+    private void Start() {
+
+        if (NetworkingManager.IsOnline) {
+            myID = Networking.PrimarySocket.Me.NetworkId;
+            Debug.Log("Connected");
         }
         else {
-            Debug.Log(resourcesDirectory + " is incorrect");
+            myID = 0;
+            Debug.Log("Not connected");
         }
+
+        Vector3 stationPosition;
+        
+        sun = Instantiate(starPrefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+        stars.Add(sun.GetComponent<Star>());
+        //stars.Add(otherStar.GetComponent<Star>());
+
+        stationPosition = sun.transform.position;
+        stationPosition.y = 550f;
+        stationPrefab = Instantiate(stationPrefab, stationPosition, Quaternion.Euler(0, 0, 90)) as GameObject;
+        station = stationPrefab.GetComponent<Station>();
+        GetPrefabs();
+        
     }
 
-    //protected override void OwnerUpdate() {
-      //  base.OwnerUpdate();
-    //}
     private void Update() { 
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            players.Remove(this);
-            Networking.Disconnect();
-        }
-
-        if (Input.touchCount > 1) {
-            mouseHeldDown = false;
-            multiTouchMode = true;
-            lineRenderer.SetPosition(0, new Vector3());
-            lineRenderer.SetPosition(1, new Vector3());
-        }
-
-        if (Input.GetMouseButtonDown(0)) {
-            mouseHeldDown = true;
-            worldMousePositionStart = GetWorldMousePosition();
-        }
-        else if (Input.GetMouseButtonUp(0)) {
-            mouseHeldDown = false;
-            lineRenderer.SetPosition(0, new Vector3());
-            lineRenderer.SetPosition(1, new Vector3());
-            worldMousePositionStop = GetWorldMousePosition();
-
-            if (!multiTouchMode) {
-                // only spawn if this is the owner and the user did more than just click on screen
-                if (IsOwner && Mathf.Abs(Vector3.Magnitude(worldMousePositionStart - worldMousePositionStop)) > 100) {
-                    SpawnPlanet(worldMousePositionStart, worldMousePositionStop);
-                }
-            }
-            else {
-                multiTouchMode = false;
-            }
-        }
-
-        if (mouseHeldDown) {
-            Vector3 worldMousePositionCurrent = GetWorldMousePosition();
-            lineRenderer.SetPosition(0, worldMousePositionStart);
-            lineRenderer.SetPosition(1, worldMousePositionCurrent);
-        }
+        
     }
 
-    private Vector3 GetWorldMousePosition() {
-        Vector3 thisMousePosition = Input.mousePosition;
-        thisMousePosition.z = Camera.main.transform.position.z * -1;
-        return Camera.main.ScreenToWorldPoint(thisMousePosition);
-    }
-
-    private void ExitGame() {
-        Networking.PrimarySocket.disconnected -= ExitGame;
-
-        BeardedManStudios.Network.Unity.MainThreadManager.Run(() => {
-            Debug.Log("Quit game");
-
-            BeardedManStudios.Network.Unity.UnitySceneManager.LoadScene("Menu");
-
-        });
-    }
-
-    public void SetPlanetToBeSpawned (int num) {
+    public void SetPlanetToBeLaunched (int num) {
         currentPlanet = num;
-        Debug.Log(currentPlanet);
+        station.isLauncherLoaded = true;
+        if (tempPlanet)
+            Destroy(tempPlanet);
+        tempPlanet = Instantiate(planetPrefabs[currentPlanet], station.transform.position, Quaternion.identity) as GameObject;
+        tempPlanet.GetComponent<Planet>().isTemporary = true;
     }
 
     public void SpawnPlanet(Vector3 start, Vector3 stop) {
@@ -116,14 +60,24 @@ public class Player : NetworkedMonoBehavior {
         initialVelocity.Normalize(); // we want the normalized vector for the initial launch velocity, and then we
         initialVelocity *= launchMagnitude; // multiply it by our cut down magnitude
 
+        if (tempPlanet)
+            Destroy(tempPlanet);
         Networking.Instantiate(planetPrefabs[currentPlanet], start, Quaternion.identity,
             NetworkReceivers.AllBuffered, (go) => PlanetSpawned(go, initialVelocity));
-        
+        station.isLauncherLoaded = false;
     }
 
     private void PlanetSpawned(SimpleNetworkedMonoBehavior go, Vector3 initialVelocity) {
         Planet planet = go.GetComponent<Planet>();
         planet.initialVelocity = initialVelocity;
-        
+        planet.owner = myID;
+    }
+
+    private void GetPrefabs () {
+        planetPrefabs = new List<GameObject>();
+
+        foreach (GameObject obj in NetworkingManager.Instance.NetworkInstantiates) {
+            planetPrefabs.Add(obj);
+        }
     }
 }

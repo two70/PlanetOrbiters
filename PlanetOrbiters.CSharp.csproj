@@ -89,10 +89,9 @@
     <Compile Include="Assets\Scripts\MakePlayer.cs" />
     <Compile Include="Assets\Scripts\NormalPlanet.cs" />
     <Compile Include="Assets\Scripts\Planet.cs" />
-    <Compile Include="Assets\Scripts\PlanetManager.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\Star.cs" />
-    <Compile Include="Assets\Scripts\UniverseManager.cs" />
+    <Compile Include="Assets\Scripts\Station.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Plugins\Bearded Man Studios Inc\Forge Networking\Changelog.txt" />

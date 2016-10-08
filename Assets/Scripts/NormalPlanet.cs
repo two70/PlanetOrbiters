@@ -6,7 +6,7 @@ public class NormalPlanet : Planet {
 	// Use this for initialization
 	protected override void Start () {
         base.Start();
-        mass = 20;
+        mass = 100;
 	}
 	
 	// Update is called once per frame
