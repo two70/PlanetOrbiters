@@ -1,3 +1,7 @@
 Assets/Plugins/
+Builds
+Library
+ProjectSettings
+Temp
 *.tga
 *.meta
